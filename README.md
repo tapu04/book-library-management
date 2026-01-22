@@ -69,7 +69,7 @@ Project structure:
 
 ### 2.2 State Management (Zustand)
 
-Global state is handled by `src/store/useLibraryStore.js`:
+Global state is handled by `src/store/useLibraryStore.js` with **LocalStorage persistence**:
 
 - **State**
   - `books`: list of book objects
@@ -80,7 +80,9 @@ Global state is handled by `src/store/useLibraryStore.js`:
   - `deleteBook(id)`
   - `toggleStatus(id)` → switches `Available` ↔ `Borrowed`
 
-A mock dataset is used as initial data; IDs are created with `Date.now()` for simplicity.
+**Persistence:** The store uses Zustand's `persist` middleware to automatically save all state changes to LocalStorage. Data survives page refreshes and browser sessions.
+
+A mock dataset is used as initial data (only on first visit); IDs are created with `Date.now()` for simplicity.
 
 ### 2.3 Routing + Layout Process
 
@@ -125,11 +127,12 @@ A mock dataset is used as initial data; IDs are created with `Date.now()` for si
 
 ### 3.2 Discussion (Observations / Limitations)
 
-- Current data is **in-memory** (refresh resets to mock data).
-- `Date.now()` IDs are fine for demos, but a backend/UUID is recommended.
+- Data is **persisted to LocalStorage** via Zustand middleware (survives refreshes).
+- `Date.now()` IDs are fine for demos, but a backend/UUID is recommended for production.
 - Search is client-side; large datasets would require pagination and/or server-side filtering.
 - Form validation is implemented using custom validators; could be enhanced with libraries like Zod/Yup.
 - Dashboard statistics update automatically when books are added/deleted via Zustand reactivity.
+- LocalStorage has ~5-10MB limit per domain; sufficient for small/medium libraries.
 
 ---
 
@@ -141,7 +144,7 @@ LibManager demonstrates a maintainable React architecture with clear separation 
 
 ### 4.2 Future Scope
 
-- Persist data using LocalStorage, IndexedDB, or a backend (REST/GraphQL).
+- Backend API integration (REST/GraphQL) with Node.js + Express + MongoDB/PostgreSQL.
 - Authentication + role-based access (Admin/Librarian/Student).
 - Advanced filters (category, availability, author), sorting, and pagination.
 - Edit Book functionality with pre-filled form.
@@ -149,6 +152,7 @@ LibManager demonstrates a maintainable React architecture with clear separation 
 - Accessibility improvements (keyboard navigation, focus trapping in modals).
 - Export/Import data (CSV, JSON).
 - Book borrowing history and due dates.
+- Migration from LocalStorage to IndexedDB for larger datasets.
 
 ---
 
