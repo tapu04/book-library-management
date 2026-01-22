@@ -45,6 +45,8 @@ Project structure:
     /layout    (Layout shell)
       Layout.jsx
   /features
+    /dashboard
+      Dashboard.jsx
     /books
       BookList.jsx
       BookForm.jsx
@@ -61,7 +63,9 @@ Project structure:
 
 **Key idea:** UI primitives live in `/components/ui`, while domain logic and screens live under `/features`.
 
-**Note:** Files like `Card.jsx`, `Modal.jsx`, `BookDetails.jsx`, `Login.jsx`, and `UserList.jsx` are planned for future scope but are not created yet in the current workspace.
+**Implemented features:** Dashboard with analytics, BookForm with validation, and BookList with search/filter.
+
+**Note:** Files like `Card.jsx`, `Modal.jsx`, `BookDetails.jsx`, `Login.jsx`, and `UserList.jsx` are planned for future scope.
 
 ### 2.2 State Management (Zustand)
 
@@ -103,11 +107,20 @@ A mock dataset is used as initial data; IDs are created with `Date.now()` for si
 
 ### 3.1 Results (What Works)
 
-- Sidebar layout stays consistent across routes.
-- Book Directory displays a table of records with:
+- **Dashboard** displays library statistics:
+  - Summary cards (Total, Available, Borrowed, Categories)
+  - Recent additions list with status badges
+  - Category breakdown with visual progress bars
+  - Quick action buttons for navigation
+- **Book Directory** displays a table of records with:
   - Title, Author, Status badge
   - Action buttons (Borrow/Return, Delete)
-- Search updates results in real-time.
+  - Real-time search by title or author
+- **Add Book Form** with validation:
+  - Required field validation (Title, Author, Category)
+  - Real-time error messages
+  - Form auto-resets after successful submission
+- Sidebar layout stays consistent across routes.
 - Status updates immediately and visually (badge color changes).
 
 ### 3.2 Discussion (Observations / Limitations)
@@ -115,7 +128,8 @@ A mock dataset is used as initial data; IDs are created with `Date.now()` for si
 - Current data is **in-memory** (refresh resets to mock data).
 - `Date.now()` IDs are fine for demos, but a backend/UUID is recommended.
 - Search is client-side; large datasets would require pagination and/or server-side filtering.
-- Add Book modal is present as a placeholder; form validation should be enforced.
+- Form validation is implemented using custom validators; could be enhanced with libraries like Zod/Yup.
+- Dashboard statistics update automatically when books are added/deleted via Zustand reactivity.
 
 ---
 
@@ -130,10 +144,11 @@ LibManager demonstrates a maintainable React architecture with clear separation 
 - Persist data using LocalStorage, IndexedDB, or a backend (REST/GraphQL).
 - Authentication + role-based access (Admin/Librarian/Student).
 - Advanced filters (category, availability, author), sorting, and pagination.
-- Proper Add/Edit forms with React Hook Form + schema validation (Zod/Yup).
+- Edit Book functionality with pre-filled form.
 - Unit tests (store + components) and CI workflow.
 - Accessibility improvements (keyboard navigation, focus trapping in modals).
-- Dashboard analytics (counts by category/status, recent activity).
+- Export/Import data (CSV, JSON).
+- Book borrowing history and due dates.
 
 ---
 
@@ -180,16 +195,18 @@ npm run preview
 
 ## Key Files
 
+**Core Features:**
+- `src/features/dashboard/Dashboard.jsx` — Analytics dashboard with stats and charts
+- `src/features/books/BookList.jsx` — Book table with search, filter, and actions
+- `src/features/books/BookForm.jsx` — Add book form with validation
 - `src/store/useLibraryStore.js` — Zustand store (books + actions)
 - `src/components/layout/Layout.jsx` — Sidebar layout + `<Outlet />`
-- `src/features/books/BookList.jsx` — Table UI, search filter, actions
 - `src/App.jsx` — Routes configuration
 
-Additional utilities:
-
+**Utilities:**
 - `src/components/ui/Button.jsx` — Reusable button component
 - `src/hooks/useDebounce.js` — Debounce hook for inputs
-- `src/utils/validators.js` — Validation helpers
+- `src/utils/validators.js` — Validation helpers (validateBook)
 - `src/utils/formatters.js` — Formatting helpers
 
 ---
