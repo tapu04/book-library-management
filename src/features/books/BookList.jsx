@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { useLibraryStore } from '../../store/useLibraryStore';
 import { Search, Plus, Trash2, RefreshCcw } from 'lucide-react';
+import BookForm from './BookForm';
 
 export default function BookList() {
-    const { books, searchQuery, setSearchQuery, deleteBook, toggleStatus } = useLibraryStore();
+    const { books, searchQuery, setSearchQuery, deleteBook, toggleStatus, addBook } = useLibraryStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Advanced Filtering Logic with useMemo for performance
@@ -19,6 +20,14 @@ export default function BookList() {
     // Memoized callbacks
     const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
     const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
+
+    const handleAddBook = useCallback(
+        (book) => {
+            addBook(book);
+            setIsModalOpen(false);
+        },
+        [addBook]
+    );
 
     return (
         <div className="space-y-6">
@@ -97,18 +106,20 @@ export default function BookList() {
                 </table>
             </div>
 
-            {/* Example Modal Trigger (Implementation details would go here) */}
+            {/* Add Book Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white p-6 rounded-lg w-full max-w-md">
+                <div
+                    className="fixed inset-0 bg-black/50 flex items-center justify-center p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="Add Book"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) handleCloseModal();
+                    }}
+                >
+                    <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
                         <h3 className="text-lg font-bold mb-4">Add Book</h3>
-                        {/* Form Logic Would go here using React Hook Form */}
-                        <button
-                            onClick={handleCloseModal}
-                            className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg text-gray-700 font-medium transition-all"
-                        >
-                            Close
-                        </button>
+                        <BookForm onSubmit={handleAddBook} onCancel={handleCloseModal} />
                     </div>
                 </div>
             )}
